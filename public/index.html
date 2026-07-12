@@ -311,7 +311,7 @@
       }
     }
 
-    // 取得した空き状況と選択プランをもとに時間を表示
+// 取得した空き状況と選択プランをもとに時間を表示
     function renderTimeOptions(availability) {
       const planVal = courseSelect.value;
       timeSelect.innerHTML = '<option value="">選択してください</option>';
@@ -322,7 +322,7 @@
         timeSelect.innerHTML += `<option value="11:00～12:30">① 11:00～12:30</option>`;
         isAvailableSlotExist = true;
       } else {
-        timeSelect.innerHTML += `<option value="" disabled>① 11:00～12:30 (予約済/グレーアウト)</option>`;
+        timeSelect.innerHTML += `<option value="" disabled>① 11:00～12:30 (予約済み)</option>`;
       }
 
       // ② 13:00～14:30 (通常プランのみ表示)
@@ -331,12 +331,12 @@
           timeSelect.innerHTML += `<option value="13:00～14:30">② 13:00～14:30</option>`;
           isAvailableSlotExist = true;
         } else {
-          timeSelect.innerHTML += `<option value="" disabled>② 13:00～14:30 (予約済/グレーアウト)</option>`;
+          timeSelect.innerHTML += `<option value="" disabled>② 13:00～14:30 (予約済み)</option>`;
         }
       }
 
       if (!isAvailableSlotExist) {
-        timeSelect.innerHTML = '<option value="">この日はすべて満枠です</option>';
+        timeSelect.innerHTML = '<option value="">この日はすべて予約済みです</option>';
       }
 
       timeSelect.disabled = false;
