@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>空に浮かぶサウナ小屋 月曜日限定 Day Sauna | 白のMINKA</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Noto Serif JP', serif; }
+    .font-sans { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    .fade-in { animation: fadeIn 0.8s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* カレンダーで選択不可の日を視覚的に薄くする設定（一部ブラウザ向け） */
+    input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; }
+  </style>
+</head>
+<body class="text-stone-800 antialiased selection:bg-stone-200 bg-[#f9f8f6]">
+
+  <header id="header" class="fixed w-full top-0 z-40 transition-all duration-300 bg-transparent py-5">
+    <div class="container mx-auto px-6 flex justify-between items-center">
+      <div class="flex flex-col items-start">
+        <h1 id="header-title" class="tracking-widest text-2xl text-white transition-colors duration-300">白のMINKA</h1>
+        <span id="header-sub" class="text-xs tracking-widest text-white/80 transition-colors duration-300">Monday Day Sauna</span>
+      </div>
+    </div>
+  </header>
+
+  <div id="step-0">
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+      <div class="absolute inset-0 z-0">
+        <!-- サウナをイメージしたプレースホルダー画像 -->
+        <img src="https://images.unsplash.com/photo-1515362778563-6a8d0e44bc0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Day Sauna" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-black/40"></div>
+      </div>
+      <div class="relative z-10 text-center text-white px-4 mt-16 fade-in">
+        <p class="text-sm md:text-base tracking-[0.2em] mb-4 text-stone-200">Monday Only</p>
+        <h2 class="text-3xl md:text-5xl lg:text-6xl mb-6 tracking-widest leading-relaxed">
+          <span class="inline-block">空に浮かぶサウナ小屋、</span><br />
+          <span class="inline-block">月曜日だけの特別な解放。</span>
+        </h2>
+        <p class="text-base md:text-lg font-light tracking-widest mb-10 leading-relaxed font-sans">
+          各時間帯1組様限定 / 最大3名様迄
+        </p>
+        <button onclick="scrollToReservation()" class="bg-white text-stone-800 px-10 py-4 text-lg tracking-widest hover:bg-stone-100 transition-all duration-300">予約ページへ進む</button>
+      </div>
+    </section>
+  </div>
+
+  <section id="reservation-section" class="py-20 bg-white border-t border-stone-200">
+    <div class="container mx-auto px-4 max-w-3xl">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl text-stone-800 tracking-widest mb-3">Reservation</h2>
+        <p class="text-stone-500 text-sm tracking-wider font-sans">月曜日限定 Day Sauna ご予約フォーム</p>
+      </div>
+
+      <div class="bg-[#f9f8f6] p-6 md:p-10 shadow-sm border border-stone-200">
+        
+        <div id="step-1" class="fade-in">
+          <form id="reservation-form" class="space-y-8">
+            
+            <!-- ご利用目的（コース選択） -->
+            <div>
+              <h3 class="text-lg text-stone-800 mb-4 flex items-center border-b border-stone-200 pb-2">ご希望のプラン</h3>
+              <div class="space-y-4">
+                <label class="block text-sm text-stone-600 mb-2">プラン選択 <span class="text-red-500">*</span></label>
+                <select id="course-select" name="plan" class="w-full p-3 border border-stone-300 focus:border-stone-800 outline-none appearance-none bg-white font-sans text-stone-800" required>
+                  <option value="">選択してください</option>
+                  <option value="通常プラン (おひとり様 ¥2,500)">【通常】サウナ＋9sense特製グラース＆ドリンク (おひとり様 ¥2,500)</option>
+                  <option value="限定プラン (おひとり様 ¥5,000)">【11:00限定】サウナ＋9senseカジュアルランチコース (おひとり様 ¥5,000)</option>
+                </select>
+                <p class="text-[11px] text-stone-500 mt-2 font-sans">
+                  ※基本料金(¥1,500)には専用ガウン・タオル・アメニティが含まれます。<br>
+                  ※ランチコース付プランは「11:00～12:30」のサウナご利用後のお食事となります。
+                </p>
+              </div>
+            </div>
+
+            <!-- 日時と人数 -->
+            <div id="datetime-block" class="hidden fade-in">
+              <h3 class="text-lg text-stone-800 mb-4 flex items-center border-b border-stone-200 pb-2">日時と人数</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm text-stone-600 mb-2">ご希望日（月曜限定） <span class="text-red-500">*</span></label>
+                  <input type="date" id="date-input" name="date" class="w-full p-3 border border-stone-300 focus:border-stone-800 outline-none bg-white font-sans text-stone-800" required />
+                  <p id="date-error" class="text-xs text-red-500 mt-1 hidden font-sans"></p>
+                  <p class="text-[10px] text-stone-500 mt-1 font-sans">※WEB予約はご利用日前日の17:00にて締め切らせていただきます。</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm text-stone-600 mb-2">お時間 <span class="text-red-500">*</span></label>
+                    <select id="time-select" name="time" class="w-full p-3 border border-stone-300 focus:border-stone-800 outline-none appearance-none bg-white font-sans text-stone-800 bg-stone-100" disabled required>
+                      <option value="">日付を選択してください</option>
+                      <!-- JSで空き状況を判定し動的に生成 -->
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm text-stone-600 mb-2">ご利用人数 (最大3名) <span class="text-red-500">*</span></label>
+                    <select name="guests" class="w-full p-3 border border-stone-300 focus:border-stone-800 outline-none appearance-none bg-white font-sans text-stone-800" required>
+                      <option value="1">1名様</option>
+                      <option value="2" selected>2名様</option>
+                      <option value="3">3名様</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- お客様情報 -->
+            <div id="customer-block" class="hidden fade-in">
+              <h3 class="text-lg text-stone-800 mb-4 flex items-center border-b border-stone-200 pb-2">お客様情報</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm text-stone-600 mb-2">お名前 <span class="text-red-500">*</span></label>
+                  <input type="text" name="name" class="w-full p-3 border border-stone-300 focus:border-stone-800 outline-none bg-white" required />
+                </div>
+                <div>
+                  <label class="block text-sm text-stone-600 mb-2">お電話番号 <span class="text-red-500">*</span></label>
+                  <input type="tel" name="phone" class="w-full p-3 border border-stone-300 focus:border-stone-800 outline-none bg-white font-sans" required />
+                </div>
+                <div>
+                  <label class="block text-sm text-stone-600 mb-2">メールアドレス <span class="text-red-500">*</span></label>
+                  <input type="email" name="email" class="w-full p-3 border border-stone-300 focus:border-stone-800 outline-none bg-white font-sans" required />
+                </div>
+                
+                <!-- アレルギー情報（食事提供があるため保持） -->
+                <div class="pt-4 border-t border-stone-100">
+                  <label class="block text-sm text-stone-600 mb-2">アレルギーの有無 <span class="text-red-500">*</span></label>
+                  <select id="allergy-select" name="has_allergy" class="w-full p-3 border border-stone-300 focus:border-stone-800 outline-none appearance-none bg-white font-sans text-stone-800" required>
+                    <option value="">選択してください</option>
+                    <option value="なし">なし</option>
+                    <option value="あり">あり</option>
+                  </select>
+                </div>
+                <div id="allergy-detail-block" class="hidden fade-in">
+                  <label class="block text-sm text-stone-600 mb-2">アレルギーの詳細 <span class="text-red-500">*</span></label>
+                  <textarea id="allergy-detail-input" name="allergy_detail" rows="2" class="w-full p-3 border border-stone-300 focus:border-stone-800 outline-none bg-white resize-none font-sans" placeholder="例：甲殻類アレルギー"></textarea>
+                </div>
+
+                <div>
+                  <label class="block text-sm text-stone-600 mb-2">その他ご要望・ご質問</label>
+                  <textarea name="requests" rows="3" class="w-full p-3 border border-stone-300 focus:border-stone-800 outline-none bg-white resize-none font-sans"></textarea>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-10">
+              <button type="submit" id="submit-btn" class="w-full bg-stone-800 text-white px-8 py-4 tracking-widest hover:bg-stone-700 transition-colors font-medium text-lg disabled:bg-stone-400">
+                予約をリクエストする
+              </button>
+              
+              <div id="error-message" class="hidden mt-6 bg-red-50 border border-red-200 p-4 text-left text-sm text-red-700 font-sans shadow-sm">
+                <p class="font-bold mb-1">通信エラーが発生しました</p>
+                <p id="error-detail" class="text-xs"></p>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div id="step-2" class="hidden text-center py-10 fade-in">
+          <div class="w-16 h-16 rounded-full bg-stone-800 text-white flex items-center justify-center mx-auto mb-6">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          </div>
+          <h3 class="text-2xl text-stone-800 mb-4 tracking-widest">リクエストを承りました</h3>
+          <p class="text-stone-600 mb-8 leading-relaxed text-sm font-sans">
+            この度はDay Saunaのご予約リクエスト、誠にありがとうございます。<br /><br />
+            現在、店舗にて予約状況を確認しております。<br />
+            <strong class="text-stone-800">店舗からの「予約確定メール」の到着をもって予約完了となります。</strong><br />
+            （ご入力いただいたメールアドレス宛に、受付確認の自動返信メールを送信しております）
+          </p>
+          <button onclick="location.reload()" class="text-stone-500 hover:text-stone-800 text-sm border-b border-stone-300 pb-1">トップページへ戻る</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-stone-900 text-stone-400 py-12 text-center text-sm font-sans">
+    <p class="tracking-widest mb-2 font-serif text-stone-300">白のMINKA | 9sense dining</p>
+    <p class="text-xs">&copy; 2026 DloFres. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // ★★★ここにDay Sauna用のGASウェブアプリURLを貼り付けます★★★
+    const GAS_URL = "https://script.google.com/macros/s/xxxxxxxxxxxxxxx/exec";
+
+    // ヘッダーのスクロール制御
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('header');
+      const title = document.getElementById('header-title');
+      const sub = document.getElementById('header-sub');
+      
+      if (window.scrollY > 50) {
+        header.classList.add('bg-white/95', 'backdrop-blur-sm', 'shadow-sm', 'py-3');
+        header.classList.remove('bg-transparent', 'py-5');
+        title.classList.replace('text-white', 'text-stone-800');
+        sub.classList.replace('text-white/80', 'text-stone-500');
+      } else {
+        header.classList.remove('bg-white/95', 'backdrop-blur-sm', 'shadow-sm', 'py-3');
+        header.classList.add('bg-transparent', 'py-5');
+        title.classList.replace('text-stone-800', 'text-white');
+        sub.classList.replace('text-stone-500', 'text-white/80');
+      }
+    });
+
+    function scrollToReservation() {
+      document.getElementById('reservation-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // 要素の取得
+    const courseSelect = document.getElementById('course-select');
+    const datetimeBlock = document.getElementById('datetime-block');
+    const customerBlock = document.getElementById('customer-block');
+    const timeSelect = document.getElementById('time-select');
+    const dateInput = document.getElementById('date-input');
+    const dateError = document.getElementById('date-error');
+    
+    // 予約可能日の初期設定（明日以降）
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    dateInput.setAttribute('min', tomorrow.toISOString().split('T')[0]);
+
+    // プラン選択によるUI切り替え
+    courseSelect.addEventListener('change', (e) => {
+      if (e.target.value) {
+        datetimeBlock.classList.remove('hidden');
+        customerBlock.classList.remove('hidden');
+        // プラン変更時に日付のバリデーションと空き枠再取得を実行
+        if(dateInput.value) checkDateAndFetchTimes();
+      } else {
+        datetimeBlock.classList.add('hidden');
+        customerBlock.classList.add('hidden');
+      }
+    });
+
+    // 日付バリデーションと空き枠確認処理
+    async function checkDateAndFetchTimes() {
+      const selectedDateStr = dateInput.value;
+      if (!selectedDateStr) return;
+
+      const dateObj = new Date(selectedDateStr);
+      const dayOfWeek = dateObj.getDay(); // 0:日, 1:月, ...
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      
+      let errorMsg = '';
+
+      // 1. 当日以前のチェック
+      if (selectedDateStr <= todayStr) {
+        errorMsg = '当日のご予約は承れません。明日の月曜日以降を選択してください。';
+      } 
+      // 2. 月曜日チェック
+      else if (dayOfWeek !== 1) {
+        errorMsg = 'Day Saunaは「月曜日限定」となります。カレンダーから月曜日を選択してください。';
+      } 
+      // 3. 前日17:00締切チェック
+      else {
+        const prevDay = new Date(dateObj);
+        prevDay.setDate(dateObj.getDate() - 1); // 選択日の前日(日曜日)
+        
+        // 現在が選択日の前日であり、かつ17時を過ぎている場合
+        if (now.toDateString() === prevDay.toDateString() && now.getHours() >= 17) {
+          errorMsg = 'WEB予約は前日の17:00で締め切らせていただきました。';
+        }
+      }
+
+      if (errorMsg) {
+        // エラー表示
+        dateError.innerText = errorMsg;
+        dateError.classList.remove('hidden');
+        timeSelect.innerHTML = '<option value="">日付が無効です</option>';
+        timeSelect.disabled = true;
+        timeSelect.classList.add('bg-stone-100');
+        document.getElementById('submit-btn').disabled = true;
+      } else {
+        // 正常な月曜日の場合、エラーを消してGASへ空き状況を問い合わせる
+        dateError.classList.add('hidden');
+        document.getElementById('submit-btn').disabled = false;
+        await fetchAvailability(selectedDateStr);
+      }
+    }
+
+    // GASから空き状況を取得し、Selectボックスを構築する
+    async function fetchAvailability(dateStr) {
+      timeSelect.innerHTML = '<option value="">空き状況を確認中...</option>';
+      timeSelect.disabled = true;
+      timeSelect.classList.add('bg-stone-100');
+
+      try {
+        // 【重要】GAS側にGETリクエストで空き状況を返す処理(doGet)を実装する必要があります
+        // 例: const response = await fetch(`${GAS_URL}?action=check&date=${dateStr}`);
+        // const availability = await response.json(); 
+        
+        // --- ※今回はフロント動作確認用として、ダミーデータで両方空いている状態を再現します ---
+        // 実際の運用時はここをfetch処理に書き換えます
+        const dummyResponse = {
+          "11:00": true, // true:空きあり, false:予約済
+          "13:00": true 
+        };
+        const availability = dummyResponse;
+        // ----------------------------------------------------------------------
+
+        renderTimeOptions(availability);
+
+      } catch (error) {
+        console.error('空き状況の取得に失敗:', error);
+        timeSelect.innerHTML = '<option value="">空き状況が取得できませんでした</option>';
+      }
+    }
+
+    // 取得した空き状況と選択プランをもとに時間を表示
+    function renderTimeOptions(availability) {
+      const planVal = courseSelect.value;
+      timeSelect.innerHTML = '<option value="">選択してください</option>';
+      let isAvailableSlotExist = false;
+
+      // ① 11:00～12:30 (全プラン共通)
+      if (availability["11:00"]) {
+        timeSelect.innerHTML += `<option value="11:00～12:30">① 11:00～12:30</option>`;
+        isAvailableSlotExist = true;
+      } else {
+        timeSelect.innerHTML += `<option value="" disabled>① 11:00～12:30 (予約済/グレーアウト)</option>`;
+      }
+
+      // ② 13:00～14:30 (通常プランのみ表示)
+      if (planVal.includes('通常')) {
+        if (availability["13:00"]) {
+          timeSelect.innerHTML += `<option value="13:00～14:30">② 13:00～14:30</option>`;
+          isAvailableSlotExist = true;
+        } else {
+          timeSelect.innerHTML += `<option value="" disabled>② 13:00～14:30 (予約済/グレーアウト)</option>`;
+        }
+      }
+
+      if (!isAvailableSlotExist) {
+        timeSelect.innerHTML = '<option value="">この日はすべて満枠です</option>';
+      }
+
+      timeSelect.disabled = false;
+      timeSelect.classList.remove('bg-stone-100');
+    }
+
+    dateInput.addEventListener('change', checkDateAndFetchTimes);
+
+    // アレルギー制御
+    const allergySelect = document.getElementById('allergy-select');
+    const allergyDetailBlock = document.getElementById('allergy-detail-block');
+    const allergyDetailInput = document.getElementById('allergy-detail-input');
+
+    allergySelect.addEventListener('change', (e) => {
+      if (e.target.value === 'あり') {
+        allergyDetailBlock.classList.remove('hidden');
+        allergyDetailInput.setAttribute('required', 'required');
+      } else {
+        allergyDetailBlock.classList.add('hidden');
+        allergyDetailInput.removeAttribute('required');
+        allergyDetailInput.value = '';
+      }
+    });
+
+    // フォーム送信処理
+    const form = document.getElementById('reservation-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const errorMessage = document.getElementById('error-message');
+    const errorDetail = document.getElementById('error-detail');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (GAS_URL === "https://script.google.com/macros/s/AKfycbyblubctMDOlO42iI9P1xgBPycHDqpS5VHgx-cNQIfNrXu1NbPVASgGiNXKpsTl2_NL/exec") {
+        alert("GASのURLが設定されていません。コードのURL部分を書き換えてください。");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = "送信中...";
+      errorMessage.classList.add('hidden');
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      // 識別用にアクション名を追加
+      data.action = "reserve"; 
+
+      try {
+        const response = await fetch(GAS_URL, {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+
+        if (!response.ok) throw new Error(`送信エラー (${response.status})`);
+
+        let result;
+        try {
+          result = await response.json();
+        } catch (parseError) {
+          throw new Error("URLが間違っているか、GASの設定が完了していません。");
+        }
+
+        if (result.status === "error") throw new Error(`システムエラー: ${result.message}`);
+
+        document.getElementById('step-1').classList.add('hidden');
+        document.getElementById('step-2').classList.remove('hidden');
+        window.scrollTo({ top: document.getElementById('reservation-section').offsetTop - 80, behavior: 'smooth' });
+
+      } catch (error) {
+        console.error('Error:', error);
+        errorDetail.innerText = error.message;
+        errorMessage.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.innerText = "予約をリクエストする";
+      }
+    });
+  </script>
+</body>
+</html>
