@@ -288,25 +288,20 @@
       }
     }
 
-    // GASから空き状況を取得し、Selectボックスを構築する
+   // GASから実際の空き状況を取得し、Selectボックスを構築する
     async function fetchAvailability(dateStr) {
       timeSelect.innerHTML = '<option value="">空き状況を確認中...</option>';
       timeSelect.disabled = true;
       timeSelect.classList.add('bg-stone-100');
 
       try {
-        // 【重要】GAS側にGETリクエストで空き状況を返す処理(doGet)を実装する必要があります
-        // 例: const response = await fetch(`${GAS_URL}?action=check&date=${dateStr}`);
-        // const availability = await response.json(); 
+        // GASへ対象日の空き状況（GETリクエスト）を問い合わせる
+        const response = await fetch(`${GAS_URL}?action=check&date=${dateStr}`);
         
-        // --- ※今回はフロント動作確認用として、ダミーデータで両方空いている状態を再現します ---
-        // 実際の運用時はここをfetch処理に書き換えます
-        const dummyResponse = {
-          "11:00": true, // true:空きあり, false:予約済
-          "13:00": true 
-        };
-        const availability = dummyResponse;
-        // ----------------------------------------------------------------------
+        if (!response.ok) throw new Error('通信エラー');
+        
+        // GASから返ってきた結果（true/false）を受け取る
+        const availability = await response.json(); 
 
         renderTimeOptions(availability);
 
