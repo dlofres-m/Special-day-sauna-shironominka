@@ -375,11 +375,6 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      if (GAS_URL === "https://script.google.com/macros/s/AKfycbyblubctMDOlO42iI9P1xgBPycHDqpS5VHgx-cNQIfNrXu1NbPVASgGiNXKpsTl2_NL/exec") {
-        alert("GASのURLが設定されていません。コードのURL部分を書き換えてください。");
-        return;
-      }
-
       submitBtn.disabled = true;
       submitBtn.innerText = "送信中...";
       errorMessage.classList.add('hidden');
